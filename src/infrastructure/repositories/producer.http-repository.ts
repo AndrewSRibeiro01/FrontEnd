@@ -1,4 +1,8 @@
-import type { Producer } from '../../domain/entities/producer';
+import type {
+  NewProducer,
+  Producer,
+  ProducerPatch,
+} from '../../domain/entities/producer';
 import type { ProducerRepository } from '../../domain/repositories/producer.repository';
 import { apiClient } from '../http/api-client';
 
@@ -13,16 +17,16 @@ export class ProducerHttpRepository implements ProducerRepository {
     return data;
   }
 
-  async create(input: Omit<Producer, 'id'>): Promise<Producer> {
+  async create(input: NewProducer): Promise<Producer> {
     const { data } = await apiClient.post<Producer>('/producers', input);
     return data;
   }
 
-  async update(
-    id: string,
-    input: Partial<Omit<Producer, 'id'>>,
-  ): Promise<Producer> {
-    const { data } = await apiClient.patch<Producer>(`/producers/${id}`, input);
+  async update(id: string, input: ProducerPatch): Promise<Producer> {
+    const { data } = await apiClient.patch<Producer>(
+      `/producers/${id}`,
+      input,
+    );
     return data;
   }
 
