@@ -1,6 +1,7 @@
 import { createBrowserRouter, Outlet } from 'react-router-dom';
 
 import { AppLayout } from '../components/organisms/AppLayout';
+import { NotificationsProvider } from '../notifications/notifications-context';
 import { DashboardPage } from '../pages/dashboard/DashboardPage';
 import { FarmDetailsPage } from '../pages/farms/FarmDetailsPage';
 import { ProducerDetailsPage } from '../pages/producers/ProducerDetailsPage';
@@ -8,9 +9,11 @@ import { ProducersPage } from '../pages/producers/ProducersPage';
 
 function Layout() {
   return (
-    <AppLayout>
-      <Outlet />
-    </AppLayout>
+    <NotificationsProvider>
+      <AppLayout>
+        <Outlet />
+      </AppLayout>
+    </NotificationsProvider>
   );
 }
 

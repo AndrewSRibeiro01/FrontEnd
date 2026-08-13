@@ -24,6 +24,7 @@ import { ConfirmDialog } from '../../components/molecules/ConfirmDialog';
 import { EmptyState } from '../../components/molecules/EmptyState';
 import { FarmForm } from '../../components/organisms/FarmForm';
 import { FarmList } from '../../components/organisms/FarmList';
+import { useNotify } from '../../notifications/notifications-context';
 
 const Header = styled.div`
   display: flex;
@@ -50,6 +51,7 @@ export function ProducerDetailsPage() {
   const { producerId = '' } = useParams<{ producerId: string }>();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const notify = useNotify();
 
   const producer = useAppSelector((state) => state.producers.byId[producerId]);
   const farms = useAppSelector((state) =>
@@ -90,8 +92,10 @@ export function ProducerDetailsPage() {
     if (editing) {
       const { producerId: _unused, ...patch } = values;
       await dispatch(updateFarm(editing.id, patch));
+      notify.success('Fazenda atualizada com sucesso.');
     } else {
       await dispatch(createFarm(values));
+      notify.success('Fazenda cadastrada com sucesso.');
     }
     void dispatch(loadDashboard());
     closeForm();
@@ -99,7 +103,13 @@ export function ProducerDetailsPage() {
 
   const handleDelete = async () => {
     if (!confirmDelete) return;
-    await dispatch(deleteFarm(confirmDelete.id));
+    const name = confirmDelete.name;
+    try {
+      await dispatch(deleteFarm(confirmDelete.id));
+      notify.success(`Fazenda "${name}" excluída.`);
+    } catch (err) {
+      notify.error(err instanceof Error ? err.message : 'Erro ao excluir.');
+    }
     setConfirmDelete(null);
     void dispatch(loadDashboard());
   };

@@ -28,6 +28,7 @@ import { HStack, VStack } from '../../components/atoms/Stack';
 import { EmptyState } from '../../components/molecules/EmptyState';
 import { CropForm } from '../../components/organisms/CropForm';
 import { HarvestForm } from '../../components/organisms/HarvestForm';
+import { useNotify } from '../../notifications/notifications-context';
 
 const Title = styled.h1`
   margin: 0;
@@ -66,6 +67,7 @@ const CropChip = styled.li`
 export function FarmDetailsPage() {
   const { farmId = '' } = useParams<{ farmId: string }>();
   const dispatch = useAppDispatch();
+  const notify = useNotify();
 
   const farm = useAppSelector((state) => state.farms.byId[farmId]);
   const producer = useAppSelector((state) =>
@@ -121,21 +123,33 @@ export function FarmDetailsPage() {
     year: number;
   }) => {
     await dispatch(createHarvest(values));
+    notify.success(`Safra ${values.year} adicionada.`);
     void dispatch(loadDashboard());
   };
 
   const handleAddCrop = async (values: { harvestId: string; name: string }) => {
     await dispatch(createCrop(values));
+    notify.success(`Cultura "${values.name}" adicionada.`);
     void dispatch(loadDashboard());
   };
 
   const handleDeleteCrop = async (id: string) => {
-    await dispatch(deleteCrop(id));
+    try {
+      await dispatch(deleteCrop(id));
+      notify.success('Cultura removida.');
+    } catch (err) {
+      notify.error(err instanceof Error ? err.message : 'Erro ao remover.');
+    }
     void dispatch(loadDashboard());
   };
 
   const handleDeleteHarvest = async (id: string) => {
-    await dispatch(deleteHarvest(id));
+    try {
+      await dispatch(deleteHarvest(id));
+      notify.success('Safra removida.');
+    } catch (err) {
+      notify.error(err instanceof Error ? err.message : 'Erro ao remover.');
+    }
     void dispatch(loadDashboard());
   };
 
