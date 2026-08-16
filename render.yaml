@@ -9,7 +9,7 @@ services:
     pullRequestPreviewsEnabled: false
     envVars:
       - key: VITE_API_URL
-        value: https://agro-back.onrender.com/api
+        value: https://backend-ngrl.onrender.com/api
       - key: VITE_USE_MOCKS
         value: 'false'
     routes:
