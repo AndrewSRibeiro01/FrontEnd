@@ -24,3 +24,9 @@ dist-ssr
 *.sw?
 
 scope.md
+
+# Local env files (must not be committed — Vite bakes them into the bundle at build time)
+.env
+.env.local
+.env.*.local
+!.env.example
