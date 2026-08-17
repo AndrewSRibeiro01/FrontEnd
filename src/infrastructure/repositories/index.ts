@@ -24,9 +24,11 @@ export interface Repositories {
   dashboard: DashboardRepository;
 }
 
+const rawUseMocks = import.meta.env.VITE_USE_MOCKS;
 const useMocks =
-  (import.meta.env.VITE_USE_MOCKS ?? 'true').toString().toLowerCase() ===
-  'true';
+  rawUseMocks !== undefined
+    ? rawUseMocks.toString().toLowerCase() === 'true'
+    : !import.meta.env.PROD;
 
 export const repositories: Repositories = useMocks
   ? {
